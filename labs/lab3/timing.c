@@ -36,12 +36,33 @@ int timeval_subtract (struct timeval *result, struct timeval *x, struct timeval 
   return x->tv_sec < y->tv_sec;
 }
 
+void lab3(int argc, char* argv[]){
+	int processID = fork();
+	struct timeval current_time;
+	if(processID > 0){
+		printf("Parent (%i) created child (%i)\n", getpid(), processID);
+	} else {
+		int retValue = execvp(argv[1], argv + 1);
+		if(retValue == -1){
+			printf("Command %s does not exist\n", argv[1]);
+			exit(1);
+		}
+	}
+	while(wait(NULL) > 0){
+		
+	}
+}
+
 // USE THE FOLLOWING COMMAND TO COMPILE:
 //		gcc timer.c -o timer
 int main(int argc, char * argv[]) {
   struct timeval start, end, diff;
   
   // TODO: Add you implementation here
+  	gettimeofday(&start, NULL);
+	lab3(argc, argv);
+	gettimeofday(&end, NULL);
+	timeval_subtract(&diff, &end, &start);
 
   // Use the following print statement to output the reslts once you've calcualted the time of execution (i.e., diff)
   printf("Run Time: %ld.%04ld (s)\n", diff.tv_sec, diff.tv_usec/1000);

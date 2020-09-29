@@ -167,6 +167,7 @@ UPROGS=\
 	_grep\
 	_init\
 	_kill\
+	_lab2\
 	_ln\
 	_ls\
 	_mkdir\

@@ -13,17 +13,19 @@ int main(void) {
     
     setbuf(stdout, NULL);
 
-     
-    int processID = fork();
     int fd[2];
-    pipe(fd);
+    if(pipe(fd) != 0){
+	printf("Pipe creation error\n");
+    }
+
+    int processID = fork();
 
     if(processID == 0){
 	printf("In CHILD-1 (PID=%i): executing command %s ...\n", getpid(), argv1[0]);
-	dup2(fd[1], 1);
+	dup2(fd[1], STDOUT_FILENO);
 	close(fd[0]);
 	close(fd[1]);
-	int execReturn = execvp(argv1[0], argv1);
+	execvp(argv1[0], argv1);
 	fprintf(stderr, "Child 1 Failed\n");
 	exit(1);
     }
@@ -38,7 +40,7 @@ int main(void) {
 	}
     } else {
 	printf("In Child-2 (PID=%i): executing command %s ...\n", getpid(), argv2[0]);
-	dup2(fd[0], 0);
+	dup2(fd[0], STDIN_FILENO);
 	close(fd[1]);
 	close(fd[0]);
 	execvp(argv2[0], argv2);
